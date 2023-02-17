@@ -19,8 +19,6 @@ public class Main {
         DataManager dm = new DataManager("./data/data.txt");
         ArrayList<Task> tasksData = dm.loadData();
 
-//        printData(tasksData);
-//        System.out.println();
         System.out.println("Printing deadlines before sorting");
         printDeadlines(tasksData);
         System.out.println("Printing deadlines after sorting");
@@ -30,8 +28,7 @@ public class Main {
 
         ArrayList<Task> filteredList = filterTaskListUsingStreams(tasksData, "11");
         System.out.println("\nFiltered list of tasks");
-        printData(filteredList);
-
+        printDataUsingStream(filteredList);
     }
 
     private static int countDeadlines(ArrayList<Task> tasksData) {
@@ -43,14 +40,28 @@ public class Main {
         }
         return count;
     }
+    private static int countDeadlinesUsingStream(ArrayList<Task> tasks) {
+        int count = (int) tasks.stream()
+                .filter(t -> t instanceof Deadline)
+                .count();
+        return count;
+    }
 
     public static void printData(ArrayList<Task> tasksData) {
+        System.out.println("Printing data using iteration");
         for (Task t : tasksData) {
             System.out.println(t);
         }
     }
 
+    public static void printDataUsingStream(ArrayList<Task> tasks) {
+        System.out.println("Printing data using streams");
+        tasks.stream()          // convert to stream
+                .forEach(System.out::println);
+    }
+
     public static void printDeadlines(ArrayList<Task> tasksData) {
+        System.out.println("Printing deadline using iteration");
         for (Task t : tasksData) {
             if (t instanceof Deadline) {
                 System.out.println(t);
@@ -59,7 +70,6 @@ public class Main {
     }
 
     public static void printDeadlinesUsingStream(ArrayList<Task> tasks) {
-
         tasks.stream()
                 .filter(t -> t instanceof Deadline)
                 .sorted((a, b) -> a.getDescription().compareToIgnoreCase(b.getDescription()))
